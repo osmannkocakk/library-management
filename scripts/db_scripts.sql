@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS books (
 
 CREATE TABLE IF NOT EXISTS borrow_records (
   id SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(id),
-  book_id INT REFERENCES books(id),
+  "userId" INT REFERENCES users(id),
+  "bookId" INT REFERENCES books(id),
   borrowed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   returned_at TIMESTAMP,
   rating INT CHECK (rating >= 0 AND rating <= 10)

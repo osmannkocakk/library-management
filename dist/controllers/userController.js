@@ -9,14 +9,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
+exports.createUser = exports.getUser = exports.getUsers = void 0;
 const userService_1 = require("../services/userService");
-class UserController {
-    static getUsers(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const users = yield userService_1.UserService.getAllUsers();
-            res.json(users);
-        });
+const express_validator_1 = require("express-validator");
+const userService = new userService_1.UserService();
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const users = yield userService.getAllUsers();
+    res.json(users);
+});
+exports.getUsers = getUsers;
+const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = parseInt(req.params.id);
+    try {
+        const user = yield userService.getUserById(userId);
+        res.json(user);
     }
-}
-exports.UserController = UserController;
+    catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+        res.status(404).json({ message: errorMessage });
+    }
+});
+exports.getUser = getUser;
+exports.createUser = [
+    (0, express_validator_1.body)("name").isString().notEmpty(),
+    (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        const { name } = req.body;
+        try {
+            const user = yield userService.createUser(name);
+            res.status(201).json(user);
+        }
+        catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+            res.status(404).json({ message: errorMessage });
+        }
+    })
+];

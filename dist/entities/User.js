@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
+const BorrowRecord_1 = require("./BorrowRecord");
 let User = class User {
 };
 exports.User = User;
@@ -23,9 +24,13 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)(),
+    (0, typeorm_1.Column)({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),
     __metadata("design:type", Date)
 ], User.prototype, "created_at", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => BorrowRecord_1.BorrowRecord, borrowRecord => borrowRecord.user),
+    __metadata("design:type", Array)
+], User.prototype, "borrowRecords", void 0);
 exports.User = User = __decorate([
-    (0, typeorm_1.Entity)("users")
+    (0, typeorm_1.Entity)()
 ], User);

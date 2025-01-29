@@ -10,12 +10,54 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
-const ormconfig_1 = require("../config/ormconfig");
+const typeorm_1 = require("typeorm");
 const User_1 = require("../entities/User");
+const BorrowRecord_1 = require("../entities/BorrowRecord");
 class UserService {
-    static getAllUsers() {
+    constructor() {
+        this.userRepository = (0, typeorm_1.getRepository)(User_1.User);
+        this.borrowRecordRepository = (0, typeorm_1.getRepository)(BorrowRecord_1.BorrowRecord);
+    }
+    getAllUsers() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield ormconfig_1.AppDataSource.getRepository(User_1.User).find();
+            return this.userRepository.find();
+        });
+    }
+    getUserById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.userRepository.findOne({
+                where: { id },
+                relations: ["borrowRecords", "borrowRecords.book"]
+            });
+            if (!user) {
+                throw new Error("User not found");
+            }
+            const pastBooks = user.borrowRecords
+                .filter(record => record.returned_at)
+                .map(record => ({
+                name: record.book.name,
+                userScore: record.rating
+            }));
+            const presentBooks = user.borrowRecords
+                .filter(record => !record.returned_at)
+                .map(record => ({
+                name: record.book.name
+            }));
+            return {
+                id: user.id,
+                name: user.name,
+                books: {
+                    past: pastBooks,
+                    present: presentBooks
+                }
+            };
+        });
+    }
+    createUser(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = new User_1.User();
+            user.name = name;
+            return this.userRepository.save(user);
         });
     }
 }
