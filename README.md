@@ -4,6 +4,7 @@ This is a simple library management application built with Node.js, Express, Typ
 
 ### Install Dependencies
 `npm install express typeorm pg express-validator lodash dotenv`
+
 `npm install --save-dev typescript ts-node @types/express @types/lodash @types/node`
 
 ### Set Up the Database
