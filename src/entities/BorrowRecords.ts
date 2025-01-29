@@ -7,10 +7,10 @@ export class BorrowRecords {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => Users, user => user.borrowRecords, { onDelete: 'CASCADE' })
+    @ManyToOne(() => Users, user => user.borrowRecords)
     user: Users;
 
-    @ManyToOne(() => Books, book => book.borrowRecords, { onDelete: 'CASCADE' })
+    @ManyToOne(() => Books, book => book.borrowRecords)
     book: Books;
 
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })

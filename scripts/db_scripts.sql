@@ -19,3 +19,5 @@ CREATE TABLE IF NOT EXISTS borrow_records (
   returned_at TIMESTAMP,
   rating INT CHECK (rating >= 0 AND rating <= 10)
 );
+
+CREATE INDEX idx_borrow_records_user_book ON borrow_records("userId", "bookId");
